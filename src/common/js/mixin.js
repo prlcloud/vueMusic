@@ -1,7 +1,7 @@
 import {mapGetters, mapMutations, mapActions} from 'vuex'
 import {playMode} from 'common/js/config'
 import {shuffle} from 'common/js/util'
-
+// 处理滚动高度的问题
 export const playlistMixin = {
   computed: {
     ...mapGetters([
@@ -25,7 +25,7 @@ export const playlistMixin = {
     }
   }
 }
-
+// 播放模式
 export const playerMixin = {
   computed: {
     iconMode() {
@@ -89,12 +89,12 @@ export const playerMixin = {
     ])
   }
 }
-
+// 搜索
 export const searchMixin = {
   data() {
     return {
       query: '',
-      refreshDelay: 120
+      refreshDelay: 100
     }
   },
   computed: {
@@ -118,6 +118,23 @@ export const searchMixin = {
     ...mapActions([
       'saveSearchHistory',
       'deleteSearchHistory'
+    ])
+  }
+}
+
+// 登录
+export const loginMixin = {
+  computed: {
+    ...mapGetters([
+      'user'
+    ])
+  },
+  methods: {
+    saveLogin() {
+      this.saveLoginHistory(this.query)
+    },
+    ...mapActions([
+      'saveLoginHistory'
     ])
   }
 }

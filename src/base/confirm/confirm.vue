@@ -78,7 +78,7 @@
       .confirm-content
         width: 270px
         border-radius: 13px
-        background: $color-highlight-background
+        background: $color-content
         .text
           padding: 19px 15px
           line-height: 22px
@@ -95,7 +95,7 @@
             line-height: 22px
             padding: 10px 0
             border-top: 1px solid $color-background-d
-            color: $color-text-d
+            color: $color-text-l
             &.left
               border-right: 1px solid $color-background-d
 

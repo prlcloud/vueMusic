@@ -17,6 +17,7 @@
         type: Boolean,
         default: true
       },
+      // scroll要不要监听滚动事件
       listenScroll: {
         type: Boolean,
         default: false
@@ -25,10 +26,12 @@
         type: Array,
         default: null
       },
+      // 上拉刷新
       pullup: {
         type: Boolean,
         default: false
       },
+      // 搜索页列表滚动
       beforeScroll: {
         type: Boolean,
         default: false
@@ -59,7 +62,7 @@
             me.$emit('scroll', pos)
           })
         }
-
+        // 上拉刷新
         if (this.pullup) {
           this.scroll.on('scrollEnd', () => {
             if (this.scroll.y <= (this.scroll.maxScrollY + 50)) {
@@ -83,6 +86,7 @@
       refresh() {
         this.scroll && this.scroll.refresh()
       },
+      // 滚动到那个位置
       scrollTo() {
         this.scroll && this.scroll.scrollTo.apply(this.scroll, arguments)
       },

@@ -86,14 +86,17 @@
         return ''
       },
       selectItem(item, index) {
+        // 随机播放
         if (this.mode === playMode.random) {
           index = this.playlist.findIndex((song) => {
             return song.id === item.id
           })
         }
+        // 顺序播放, 单曲循环
         this.setCurrentIndex(index)
         this.setPlayingState(true)
       },
+      // 列表滚动到当前歌曲
       scrollToCurrent(current) {
         const index = this.sequenceList.findIndex((song) => {
           return current.id === song.id
@@ -114,6 +117,7 @@
         'deleteSongList'
       ])
     },
+    // 切换成功之后观测
     watch: {
       currentSong(newSong, oldSong) {
         if (!this.showFlag || newSong.id === oldSong.id) {
@@ -158,7 +162,7 @@
       left: 0
       bottom: 0
       width: 100%
-      background-color: $color-highlight-background
+      background-color: $color-content
       .list-header
         position: relative
         padding: 20px 30px 10px 20px
@@ -230,7 +234,7 @@
       .list-close
         text-align: center
         line-height: 50px
-        background: $color-background
+        background: $color-content
         font-size: $font-size-medium-x
         color: $color-text-l
 </style>

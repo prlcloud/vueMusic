@@ -8,7 +8,7 @@
   import MusicList from 'components/music-list/music-list'
   import {getSingerDetail} from 'api/singer'
   import {ERR_OK} from 'api/config'
-  import {createSong} from 'common/js/song'
+  import {createSongSinger} from 'common/js/song'
   import {mapGetters} from 'vuex'
 
   export default {
@@ -19,6 +19,7 @@
       bgImage() {
         return this.singer.avatar
       },
+      // 从singer.vue组件中获取singer
       ...mapGetters([
         'singer'
       ])
@@ -33,22 +34,26 @@
     },
     methods: {
       _getDetail() {
+        // 判断，没有获取到id，回退到上一个页面
         if (!this.singer.id) {
           this.$router.push('/singer')
           return
         }
         getSingerDetail(this.singer.id).then((res) => {
-          if (res.code === ERR_OK) {
-            this.songs = this._normalizeSongs(res.data.list)
+          const data = JSON.parse(res)
+          if (data.code === ERR_OK) {
+            this.songs = this._normalizeSongs(data.hotSongs)
+            // console.log('this.songs', this.songs)
           }
         })
       },
+      // 重组 res.data.list 数据,只拿需要的
       _normalizeSongs(list) {
         let ret = []
-        list.forEach((item) => {
-          let {musicData} = item
-          if (musicData.songid && musicData.albummid) {
-            ret.push(createSong(musicData))
+        list.forEach((musicData) => {
+          // 解构赋值-拿到item 下的 musicData 列表数据
+          if (musicData.id) {
+            ret.push(createSongSinger(musicData))
           }
         })
         return ret

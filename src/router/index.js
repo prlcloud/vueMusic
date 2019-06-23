@@ -39,14 +39,26 @@ const Disc = (resolve) => {
   })
 }
 
-/* const TopList = (resolve) => {
+const TopList = (resolve) => {
   import('components/top-list/top-list').then((module) => {
     resolve(module)
   })
-} */
+}
 
 const UserCenter = (resolve) => {
   import('components/user-center/user-center').then((module) => {
+    resolve(module)
+  })
+}
+
+const Login = (resolve) => {
+  import('components/login/login').then((module) => {
+    resolve(module)
+  })
+}
+
+const Register = (resolve) => {
+  import('components/register/register').then((module) => {
     resolve(module)
   })
 }
@@ -79,12 +91,13 @@ export default new Router({
     },
     {
       path: '/rank',
-      component: Rank
-      /* children: [
+      component: Rank,
+      children: [
         {
           path: ':id',
-          // component: TopList
-        } */
+          component: TopList
+        }
+      ]
     },
     {
       path: '/search',
@@ -99,6 +112,14 @@ export default new Router({
     {
       path: '/user',
       component: UserCenter
+    },
+    {
+      path: '/login',
+      component: Login
+    },
+    {
+      path: '/register',
+      component: Register
     }
   ]
 })

@@ -1,3 +1,4 @@
+<!--开关组件-->
 <template>
   <ul class="switches">
     <li class="switch-item" v-for="(item,index) in switches" :class="{'active':currentIndex === index}"
@@ -35,7 +36,7 @@
     align-items: center
     width: 240px
     margin: 0 auto
-    border: 1px solid $color-highlight-background
+    border: 1px solid $color-item
     border-radius: 5px
     .switch-item
       flex: 1
@@ -45,5 +46,5 @@
       color: $color-text-d
       &.active
         background: $color-highlight-background
-        color: $color-text
+        color: $color-text-d
 </style>

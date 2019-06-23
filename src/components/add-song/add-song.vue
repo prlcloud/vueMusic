@@ -128,7 +128,7 @@
     bottom: 0
     width: 100%
     z-index: 200
-    background: $color-background
+    background: $color-content
     &.slide-enter-active, &.slide-leave-active
       transition: all 0.3s
     &.slide-enter, &.slide-leave-to
@@ -149,7 +149,7 @@
           display: block
           padding: 12px
           font-size: 20px
-          color: $color-theme
+          color: $color-text
 
     .search-box-wrapper
       margin: 20px

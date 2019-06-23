@@ -17,14 +17,17 @@
   export default {
     name: 'slider',
     props: {
+      // 循环轮播
       loop: {
         type: Boolean,
         default: true
       },
+      // 自动轮播
       autoPlay: {
         type: Boolean,
         default: true
       },
+      // 自动轮播的间隔
       interval: {
         type: Number,
         default: 4000
@@ -42,11 +45,13 @@
         this._initDots()
         this._initSlider()
 
+        // 自动播放
         if (this.autoPlay) {
           this._play()
         }
       }, 20)
 
+      // 监听窗口事件
       window.addEventListener('resize', () => {
         if (!this.slider) {
           return
@@ -67,6 +72,7 @@
       clearTimeout(this.timer)
     },
     methods: {
+      // 初始化slider宽度，isResize标志位
       _setSliderWidth(isResize) {
         this.children = this.$refs.sliderGroup.children
 

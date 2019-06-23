@@ -7,10 +7,6 @@
       <div class="switches-wrapper">
         <switches @switch="switchItem" :switches="switches" :currentIndex="currentIndex"></switches>
       </div>
-      <div ref="playBtn" class="play-btn" @click="random">
-        <i class="icon-play"></i>
-        <span class="text">随机播放全部</span>
-      </div>
       <div class="list-wrapper" ref="listWrapper">
         <scroll ref="favoriteList" class="list-scroll" v-if="currentIndex===0" :data="favoriteList">
           <div class="list-inner">
@@ -71,7 +67,8 @@
       },
       ...mapGetters([
         'favoriteList',
-        'playHistory'
+        'playHistory',
+        'userLogin'
       ])
     },
     methods: {
@@ -85,26 +82,14 @@
         this.currentIndex = index
       },
       selectSong(song) {
+        console.log('点击歌曲', song)
         this.insertSong(new Song(song))
       },
       back() {
         this.$router.back()
       },
-      random() {
-        let list = this.currentIndex === 0 ? this.favoriteList : this.playHistory
-        if (list.length === 0) {
-          return
-        }
-        list = list.map((song) => {
-          return new Song(song)
-        })
-        this.randomPlay({
-          list
-        })
-      },
       ...mapActions([
-        'insertSong',
-        'randomPlay'
+        'insertSong'
       ])
     },
     components: {
@@ -125,7 +110,7 @@
     bottom: 0
     z-index: 100
     width: 100%
-    background: $color-background
+    background: $color-content
     &.slide-enter-active, &.slide-leave-active
       transition: all 0.3s
     &.slide-enter, &.slide-leave-to
@@ -139,31 +124,12 @@
         display: block
         padding: 10px
         font-size: $font-size-large-x
-        color: $color-theme
+        color: $color-background
     .switches-wrapper
       margin: 10px 0 30px 0
-    .play-btn
-      box-sizing: border-box
-      width: 135px
-      padding: 7px 0
-      margin: 0 auto
-      text-align: center
-      border: 1px solid  $color-text-l
-      color: $color-text-l
-      border-radius: 100px
-      font-size: 0
-      .icon-play
-        display: inline-block
-        vertical-align: middle
-        margin-right: 6px
-        font-size: $font-size-medium-x
-      .text
-        display: inline-block
-        vertical-align: middle
-        font-size: $font-size-small
     .list-wrapper
       position: absolute
-      top: 110px
+      top: 60px
       bottom: 0
       width: 100%
       .list-scroll

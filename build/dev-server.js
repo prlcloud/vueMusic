@@ -1,4 +1,5 @@
 require('./check-versions')()
+const bodyParser = require('body-parser')
 
 var config = require('../config')
 if (!process.env.NODE_ENV) {
@@ -12,6 +13,7 @@ var webpack = require('webpack')
 var proxyMiddleware = require('http-proxy-middleware')
 var webpackConfig = require('./webpack.dev.conf')
 var axios = require('axios')
+const cache = require('apicache').middleware
 
 // default port where dev server listens for incoming traffic
 var port = process.env.PORT || config.dev.port
@@ -24,45 +26,6 @@ var proxyTable = config.dev.proxyTable
 var app = express()
 
 var apiRoutes = express.Router()
-
-apiRoutes.get('/getDiscList', function (req, res) {
-  var url = 'https://c.y.qq.com/splcloud/fcgi-bin/fcg_get_diss_by_tag.fcg'
-  axios.get(url, {
-    headers: {
-      referer: 'https://c.y.qq.com/',
-      host: 'c.y.qq.com'
-    },
-    params: req.query
-  }).then((response) => {
-    res.json(response.data)
-  }).catch((e) => {
-    console.log(e)
-  })
-})
-
-apiRoutes.get('/lyric', function (req, res) {
-  var url = 'https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg'
-
-  axios.get(url, {
-    headers: {
-      referer: 'https://c.y.qq.com/',
-      host: 'c.y.qq.com'
-    },
-    params: req.query
-  }).then((response) => {
-    var ret = response.data
-    if (typeof ret === 'string') {
-      var reg = /^\w+\(({[^()]+})\)$/
-      var matches = ret.match(reg)
-      if (matches) {
-        ret = JSON.parse(matches[1])
-      }
-    }
-    res.json(ret)
-  }).catch((e) => {
-    console.log(e)
-  })
-})
 
 app.use('/api', apiRoutes)
 
@@ -109,6 +72,7 @@ app.use(staticPath, express.static('./static'))
 
 var uri = 'http://localhost:' + port
 
+
 var _resolve
 var readyPromise = new Promise(resolve => {
   _resolve = resolve
@@ -124,7 +88,50 @@ devMiddleware.waitUntilValid(() => {
   _resolve()
 })
 
-var server = app.listen(port)
+// CORS
+app.use((req, res, next) => {
+  if(req.path !== '/' && !req.path.includes('.')){
+    req.header({
+      'Access-Control-Allow-Credentials': true,
+      'Access-Control-Allow-Origin': req.headers.origin || '*',
+      'Access-Control-Allow-Headers': 'X-Requested-With',
+      'Access-Control-Allow-Methods': 'PUT,POST,GET,DELETE,OPTIONS',
+      'Content-Type': 'application/json; charset=utf-8'
+    })
+  }
+  next()
+})
+
+// cookie parser
+app.use((req, res, next) => {
+  req.cookies = {}, (req.headers.cookie || '').split(/\s*;\s*/).forEach(pair => {
+    let crack = pair.indexOf('=')
+    if(crack < 1 || crack == pair.length - 1) return
+    req.cookies[decodeURIComponent(pair.slice(0, crack)).trim()] = decodeURIComponent(pair.slice(crack + 1)).trim()
+  })
+  next()
+})
+
+// body parser
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({extended: false}))
+
+// cache
+app.use(cache('2 minutes', ((req, res) => res.statusCode === 200)))
+
+// static
+app.use(express.static(path.join(__dirname, 'public')))
+
+// router
+const special = {
+  'daily_signin.js': '/daily_signin',
+  'fm_trash.js': '/fm_trash',
+  'personal_fm.js': '/personal_fm'
+}
+
+var server = app.listen(port, () => {
+  console.log(`server running @ http://localhost:${port}`)
+})
 
 module.exports = {
   ready: readyPromise,

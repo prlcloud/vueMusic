@@ -6,11 +6,10 @@
           class="listview"
           ref="listview">
     <ul>
-      <li v-for="group in data" class="list-group" ref="listGroup">
-        <h2 class="list-group-title">{{group.title}}</h2>
+      <li class="list-group" ref="listGroup">
         <uL>
-          <li @click="selectItem(item)" v-for="item in group.items" class="list-group-item">
-            <img class="avatar" v-lazy="item.avatar">
+          <li @click="selectItem(item)" v-for="item in data" class="list-group-item">
+            <img class="avatar" v-lazy="item.img1v1Url">
             <span class="name">{{item.name}}</span>
           </li>
         </uL>
@@ -51,7 +50,7 @@
     computed: {
       shortcutList() {
         return this.data.map((group) => {
-          return group.title.substr(0, 1)
+          return group.title
         })
       },
       fixedTitle() {
@@ -65,6 +64,7 @@
       return {
         scrollY: -1,
         currentIndex: 0,
+        // 上限和滚动位置的滚动差
         diff: -1
       }
     },
@@ -75,7 +75,9 @@
       this.listHeight = []
     },
     methods: {
+      // 点击跳转
       selectItem(item) {
+        console.log('item', item)
         this.$emit('select', item)
       },
       onShortcutTouchStart(e) {
@@ -100,9 +102,11 @@
       scroll(pos) {
         this.scrollY = pos.y
       },
-      _calculateHeight() {
+      // 计算高度
+     /* _calculateHeight() {
         this.listHeight = []
         const list = this.$refs.listGroup
+        console.log('list', list)
         let height = 0
         this.listHeight.push(height)
         for (let i = 0; i < list.length; i++) {
@@ -110,7 +114,7 @@
           height += item.clientHeight
           this.listHeight.push(height)
         }
-      },
+      }, */
       _scrollTo(index) {
         if (!index && index !== 0) {
           return
@@ -127,7 +131,7 @@
     watch: {
       data() {
         setTimeout(() => {
-          this._calculateHeight()
+          // this._calculateHeight()
         }, 20)
       },
       scrollY(newY) {
@@ -175,7 +179,7 @@
     width: 100%
     height: 100%
     overflow: hidden
-    background: $color-background
+    background: $color-content
     .list-group
       padding-bottom: 30px
       .list-group-title
@@ -195,7 +199,7 @@
           border-radius: 50%
         .name
           margin-left: 20px
-          color: $color-text-l
+          color: $color-text
           font-size: $font-size-medium
     .list-shortcut
       position: absolute
@@ -203,16 +207,16 @@
       right: 0
       top: 50%
       transform: translateY(-50%)
-      width: 20px
+      width: 30px
       padding: 20px 0
       border-radius: 10px
       text-align: center
-      background: $color-background-d
+      background: $color-highlight-background
       font-family: Helvetica
       .item
         padding: 3px
         line-height: 1
-        color: $color-text-l
+        color: $color-text
         font-size: $font-size-small
         &.current
           color: $color-theme

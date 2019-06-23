@@ -21,6 +21,7 @@
         type: Array,
         default: []
       },
+      // 榜单排行的图片，默认没有
       rank: {
         type: Boolean,
         default: false
@@ -31,7 +32,15 @@
         this.$emit('select', item, index)
       },
       getDesc(song) {
-        return `${song.singer}·${song.album}`
+        // 排行详情页
+        // console.log('song', song)
+        if (song.al) {
+          return `${song.ar[0].name}·${song.al.name}`
+        } else if (song.artist) {
+          return `${song.artist.name}·${song.subType}`
+        } else {
+          return `${song.name}`
+        }
       },
       getRankCls(index) {
         if (index <= 2) {

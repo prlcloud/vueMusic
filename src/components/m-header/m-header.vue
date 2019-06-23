@@ -1,40 +1,43 @@
 <template>
-  <div class="m-header">
-    <div class="icon"></div>
-    <h1 class="text">sunShine Music</h1>
-    <router-link tag="div" class="mine" to="/user">
-      <i class="icon-mine"></i>
-    </router-link>
-  </div>
+      <div class="m-header">
+        <router-link tag="div" class="login" to="/login">
+          <i class="icon-music"></i>
+        </router-link>
+        <h1 class="text">Sunshine音乐</h1>
+        <router-link tag="div" class="mine" to="/user">
+          <i class="icon-mine"></i>
+        </router-link>
+      </div>
 </template>
 
 <script type="text/ecmascript-6">
-  export default {}
+  export default {
+  }
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~common/stylus/variable"
   @import "~common/stylus/mixin"
-
   .m-header
     position: relative
     height: 44px
     text-align: center
     color: $color-theme
     font-size: 0
-    .icon
-      display: inline-block
-      vertical-align: top
-      margin-top: 6px
-      width: 30px
-      height: 32px
-      margin-right: 9px
-      bg-image('logo')
-      background-size: 30px 32px
+    background-color: $color-background
+    .login
+      position: absolute
+      top: 0
+      left: 0
+      .icon-music
+        display: block
+        padding: 12px
+        font-size: 20px
+        color: $color-theme
     .text
       display: inline-block
       vertical-align: top
-      line-height: 44px
+      line-height: $font-size-large
       font-size: $font-size-large
     .mine
       position: absolute

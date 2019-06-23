@@ -14,8 +14,11 @@
       <div class="filter" ref="filter"></div>
     </div>
     <div class="bg-layer" ref="layer"></div>
-    <scroll :data="songs" @scroll="scroll"
-            :listen-scroll="listenScroll" :probe-type="probeType" class="list" ref="list">
+    <scroll :data="songs"
+            @scroll="scroll"
+            :listen-scroll="listenScroll"
+            :probe-type="probeType"
+            class="list" ref="list">
       <div class="song-list-wrapper">
         <song-list :songs="songs" :rank="rank" @select="selectItem"></song-list>
       </div>
@@ -37,22 +40,28 @@
   const RESERVED_HEIGHT = 40
   const transform = prefixStyle('transform')
   const backdrop = prefixStyle('backdrop-filter')
-
+/*
+* 明天在这个地方需要加入歌手的信息，如有必要把天数加上
+* */
   export default {
     mixins: [playlistMixin],
     props: {
+      // 背景图
       bgImage: {
         type: String,
         default: ''
       },
+      // 歌曲
       songs: {
         type: Array,
         default: []
       },
+      // 歌手名字
       title: {
         type: String,
         default: ''
       },
+      // 排行榜榜单
       rank: {
         type: Boolean,
         default: false
@@ -75,6 +84,7 @@
     mounted() {
       this.imageHeight = this.$refs.bgImage.clientHeight
       this.minTransalteY = -this.imageHeight + RESERVED_HEIGHT
+      // 计算页面的top值
       this.$refs.list.$el.style.top = `${this.imageHeight}px`
     },
     methods: {
@@ -100,17 +110,20 @@
           list: this.songs
         })
       },
+      // 通过mapActions语法糖包装成函数的形式
       ...mapActions([
         'selectPlay',
         'randomPlay'
       ])
     },
     watch: {
+      // 设置滚动的偏移量
       scrollY(newVal) {
         let translateY = Math.max(this.minTransalteY, newVal)
         let scale = 1
         let zIndex = 0
         let blur = 0
+        // 向下拉的时候图片放大
         const percent = Math.abs(newVal / this.imageHeight)
         if (newVal > 0) {
           scale = 1 + percent
@@ -125,6 +138,7 @@
           zIndex = 10
           this.$refs.bgImage.style.paddingTop = 0
           this.$refs.bgImage.style.height = `${RESERVED_HEIGHT}px`
+          // 随机播放按钮
           this.$refs.playBtn.style.display = 'none'
         } else {
           this.$refs.bgImage.style.paddingTop = '70%'
@@ -164,7 +178,7 @@
         display: block
         padding: 10px
         font-size: $font-size-large-x
-        color: $color-theme
+        color: $color-background
     .title
       position: absolute
       top: 0
@@ -217,13 +231,13 @@
     .bg-layer
       position: relative
       height: 100%
-      background: $color-background
+      background: $color-content
     .list
       position: fixed
       top: 0
       bottom: 0
       width: 100%
-      background: $color-background
+      background: $color-content
       .song-list-wrapper
         padding: 20px 30px
       .loading-container

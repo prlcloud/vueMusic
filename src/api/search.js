@@ -1,38 +1,45 @@
 import jsonp from 'common/js/jsonp'
-import {commonParams, options} from './config'
+// import {commonParams, options} from './config'
+// import axios from 'axios'
 
-export function getHotKey() {
-  const url = 'https://c.y.qq.com/splcloud/fcgi-bin/gethotkey.fcg'
-
-  const data = Object.assign({}, commonParams, {
-    uin: 0,
-    needNewCode: 1,
-    platform: 'h5'
+export function getSearchSinger (keywords) {
+  const url = `https://bird.ioliu.cn/v2/?url=http://118.89.227.245:3000/search?keywords`
+  const data = Object.assign({}, {
+    keywords,
+    type: 100
   })
-
-  return jsonp(url, data, options)
+  return jsonp(url, data)
+ //  return axios.get(url)
 }
 
-export function search(query, page, zhida, perpage) {
-  const url = 'https://c.y.qq.com/soso/fcgi-bin/search_for_qq_cp'
-
-  const data = Object.assign({}, commonParams, {
-    w: query,
-    p: page,
-    perpage,
-    n: perpage,
-    catZhida: zhida ? 1 : 0,
-    zhidaqu: 1,
-    t: 0,
-    flag: 1,
-    ie: 'utf-8',
-    sem: 1,
-    aggr: 0,
-    remoteplace: 'txt.mqq.all',
-    uin: 0,
-    needNewCode: 1,
-    platform: 'h5'
+export function getSearchSongs (keywords, offset) {
+  const url = `https://bird.ioliu.cn/v2/?url=http://118.89.227.245:3000/search`
+  const data = Object.assign({}, {
+    keywords,
+    offset
   })
+  return jsonp(url, data)
+}
 
-  return jsonp(url, data, options)
+export function getSearchSuggest (keywords) {
+  const url = `https://bird.ioliu.cn/v2/?url=http://118.89.227.245:3000/search/suggest`
+  const data = Object.assign({}, {
+    keywords
+  })
+  return jsonp(url, data)
+}
+
+export function getSongDetail (ids) {
+  const url = `https://bird.ioliu.cn/v2/?url=http://118.89.227.245:3000/song/detail`
+  const data = Object.assign({}, {
+    ids,
+    type: 100
+  })
+  return jsonp(url, data)
+}
+
+export function getSearchHot (id) {
+  const url = `https://bird.ioliu.cn/v2/?url=http://118.89.227.245:3000/search/hot`
+
+  return jsonp(url)
 }

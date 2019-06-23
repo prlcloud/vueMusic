@@ -8,13 +8,12 @@
 <script>
   import ListView from 'base/listview/listview'
   import {getSingerList} from 'api/singer'
-  import {ERR_OK} from 'api/config'
   import Singer from 'common/js/singer'
   import {mapMutations} from 'vuex'
   import {playlistMixin} from 'common/js/mixin'
-
+  /* const pinyin = require('pinyin')
   const HOT_SINGER_LEN = 10
-  const HOT_NAME = '热门'
+  const HOT_NAME = '热门' */
 
   export default {
     mixins: [playlistMixin],
@@ -32,34 +31,50 @@
         this.$refs.singer.style.bottom = bottom
         this.$refs.list.refresh()
       },
-      selectSinger(singer) {
+      // 接收点击的元素，跳转路由
+      selectSinger(item) {
         this.$router.push({
-          path: `/singer/${singer.id}`
+          path: `/singer/${item.id}`
         })
-        this.setSinger(singer)
+        this.setSinger(item)
       },
+      // 获取歌手数据
       _getSingerList() {
         getSingerList().then((res) => {
-          if (res.code === ERR_OK) {
-            this.singers = this._normalizeSinger(res.data.list)
-          }
+          const data = JSON.parse(res)
+          console.log('data', data)
+          let s = data.artists
+          /* s.map((item) => {
+            let py = pinyin(item.name[0], {
+              style: pinyin.STYLE_FIRST_LETTER
+            })
+            item.initial = py[0][0].toUpperCase()
+          }) */
+          console.log('s', s)
+          this.singers = data.artists
+          console.log('this.singer', this.singers)
         })
       },
+      // 规范化歌手数据
       _normalizeSinger(list) {
         let map = {
           hot: {
-            title: HOT_NAME,
+            // title: HOT_NAME,
             items: []
           }
         }
         list.forEach((item, index) => {
-          if (index < HOT_SINGER_LEN) {
-            map.hot.items.push(new Singer({
-              name: item.Fsinger_name,
-              id: item.Fsinger_mid
-            }))
-          }
-          const key = item.Findex
+            // 由constructor构造器Singer对象，直接引用singer.js
+          console.log('item歌手', item)
+          map.hot.items.push(new Singer({
+            id: item.id,
+            name: item.name,
+            avatar: item.img1v1Url,
+            aliaName: item.alias.join(' / ')
+          }))
+          // }
+          // 给list做聚类
+          const key = item.initial
           if (!map[key]) {
             map[key] = {
               title: key,
@@ -67,13 +82,15 @@
             }
           }
           map[key].items.push(new Singer({
-            name: item.Fsinger_name,
-            id: item.Fsinger_mid
+            id: item.id,
+            name: item.name,
+            avatar: item.img1v1Url,
+            aliaName: item.alias[0]
           }))
         })
-        // 为了得到有序列表，我们需要处理 map
         let ret = []
         let hot = []
+        /* // 为了得到有序列表，我们需要处理 map
         for (let key in map) {
           let val = map[key]
           if (val.title.match(/[a-zA-Z]/)) {
@@ -81,12 +98,14 @@
           } else if (val.title === HOT_NAME) {
             hot.push(val)
           }
-        }
+        } */
+        /* // 字母排序
         ret.sort((a, b) => {
           return a.title.charCodeAt(0) - b.title.charCodeAt(0)
-        })
+        }) */
         return hot.concat(ret)
       },
+      // 做映射,用this.setSinger(singer)会实现mutation的提交
       ...mapMutations({
         setSinger: 'SET_SINGER'
       })

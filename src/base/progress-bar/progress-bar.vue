@@ -1,7 +1,9 @@
+<!-- 进度条组件 -->
 <template>
   <div class="progress-bar" ref="progressBar" @click="progressClick">
     <div class="bar-inner">
       <div class="progress" ref="progress"></div>
+      <!-- 当前位置progress-btn-wrapper-->
       <div class="progress-btn-wrapper" ref="progressBtn"
            @touchstart.prevent="progressTouchStart"
            @touchmove.prevent="progressTouchMove"
@@ -16,6 +18,7 @@
 <script type="text/ecmascript-6">
   import {prefixStyle} from 'common/js/dom'
 
+  // 进度条上小球的宽度
   const progressBtnWidth = 16
   const transform = prefixStyle('transform')
 
@@ -31,10 +34,14 @@
     },
     methods: {
       progressTouchStart(e) {
+        // 标志位
         this.touch.initiated = true
+        // 点击的位置
         this.touch.startX = e.touches[0].pageX
+        // 当前按钮的宽度
         this.touch.left = this.$refs.progress.clientWidth
       },
+      // 随时改变进度条的进度
       progressTouchMove(e) {
         if (!this.touch.initiated) {
           return
@@ -47,6 +54,7 @@
         this.touch.initiated = false
         this._triggerPercent()
       },
+      // 点击进度条到某一位置，可以播放
       progressClick(e) {
         const rect = this.$refs.progressBar.getBoundingClientRect()
         const offsetWidth = e.pageX - rect.left
@@ -62,12 +70,14 @@
       },
       _offset(offsetWidth) {
         this.$refs.progress.style.width = `${offsetWidth}px`
+        // 进度条上小球的偏移
         this.$refs.progressBtn.style[transform] = `translate3d(${offsetWidth}px,0,0)`
       }
     },
     watch: {
       percent(newPercent) {
         if (newPercent >= 0 && !this.touch.initiated) {
+          // 进度条左边的宽度
           const barWidth = this.$refs.progressBar.clientWidth - progressBtnWidth
           const offsetWidth = newPercent * barWidth
           this._offset(offsetWidth)

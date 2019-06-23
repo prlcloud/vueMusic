@@ -9,6 +9,7 @@ function resolve(dir) {
 
 module.exports = {
   entry: {
+    // app: ['babel-polyfill','./src/main.js']
     app: './src/main.js'
   },
   output: {
@@ -25,7 +26,7 @@ module.exports = {
       'common': resolve('src/common'),
       'components': resolve('src/components'),
       'base': resolve('src/base'),
-      'api': resolve('src/api')
+      'api': resolve('src/api'),
     }
   },
   module: {
@@ -47,7 +48,7 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        include: [resolve('src'), resolve('test')]
+        include: [resolve('src'), resolve('test'), resolve('/node_modules/muse-ui/dist')]
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,

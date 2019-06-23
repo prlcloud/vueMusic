@@ -16,11 +16,11 @@
           <ul>
             <li @click="selectItem(item)" v-for="item in discList" class="item">
               <div class="icon">
-                <img width="60" height="60" v-lazy="item.imgurl">
+                <img width="60" height="60" v-lazy="item.coverImgUrl">
               </div>
               <div class="text">
-                <h2 class="name" v-html="item.creator.name"></h2>
-                <p class="desc" v-html="item.dissname"></p>
+                <h2 class="name" v-html="item.creator.nickname"></h2>
+                <p class="desc" v-html="item.name"></p>
               </div>
             </li>
           </ul>
@@ -59,7 +59,6 @@
     methods: {
       handlePlaylist(playlist) {
         const bottom = playlist.length > 0 ? '60px' : ''
-
         this.$refs.recommend.style.bottom = bottom
         this.$refs.scroll.refresh()
       },
@@ -69,26 +68,32 @@
           this.$refs.scroll.refresh()
         }
       },
+      // 点击歌单进行路由跳转
       selectItem(item) {
+        console.log('item', item)
         this.$router.push({
-          path: `/recommend/${item.dissid}`
+          path: `/recommend/${item.id}`
         })
+        // 把item传到歌单，更新了state.js中的disc
         this.setDisc(item)
       },
       _getRecommend() {
         getRecommend().then((res) => {
-          if (res.code === ERR_OK) {
+          if (res.code === 0) {
             this.recommends = res.data.slider
           }
         })
       },
+      // 歌单
       _getDiscList() {
         getDiscList().then((res) => {
-          if (res.code === ERR_OK) {
-            this.discList = res.data.list
+          const data = JSON.parse(res)
+          if (data.code === ERR_OK) {
+            this.discList = data.playlists
           }
         })
       },
+      // 对应到mutation-types中的'SET_DISC'
       ...mapMutations({
         setDisc: 'SET_DISC'
       })
@@ -109,6 +114,7 @@
     width: 100%
     top: 88px
     bottom: 0
+    background-color: $color-content
     .recommend-content
       height: 100%
       overflow: hidden
@@ -121,8 +127,8 @@
           height: 65px
           line-height: 65px
           text-align: center
-          font-size: $font-size-medium
-          color: $color-theme
+          font-size: $font-size-medium-x
+          color: $color-title
         .item
           display: flex
           box-sizing: border-box
